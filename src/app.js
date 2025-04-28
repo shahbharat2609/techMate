@@ -3,19 +3,13 @@ import connectDB from './config/database.js'
 import User from './models/User.js'
 
 const app = express();
+app.use(express.json());
+
 const PORT = 7777;
 
-app.use((_req, res) => {
-    res.status(404).send("❌❌Oops! Page not found❌❌");
-})
-
 app.post("/signup", async (req, res) => {
-    const user = new User({
-        firstName: "Bharat",
-        lastName: "Shah",
-        email: "shahbharat@gmail.com",
-        password: "shahbharat",
-    })
+
+    const user = new User(req.body);          //** creating a new instance of the user model
 
     try {
         await user.save();
@@ -24,6 +18,10 @@ app.post("/signup", async (req, res) => {
         res.status(500).send("❌❌User addition failed❌❌", err.message);
     }
 });
+
+app.use((_req, res) => {
+    res.status(404).send("❌❌Oops! Page not found❌❌");
+})
 
 connectDB()
     .then(() => {
